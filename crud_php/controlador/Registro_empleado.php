@@ -15,23 +15,36 @@ if (isset($_POST['btnguardar'])) {
 
     // Verificar que todos los campos necesarios estén presentes
     if ($idempleado !== null && !empty($nombre) && !empty($apellido) && !empty($fechadenac)) {
-        try {
-            // Crear una instancia de la clase Empleado
-            $empleado = new Empleado($conexion);
+        // Validar que el ID del empleado no esté duplicado
+        $stmt = $conexion->prepare("SELECT COUNT(*) FROM empleado WHERE idempleado = ?");
+        $stmt->bind_param("i", $idempleado);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
 
-            // Intentar crear el empleado
-            $empleado->crear($idempleado, $nombre, $apellido, $fechadenac);
-            echo '<div class="alert alert-success">Empleado registrado correctamente.</div>';
-            
-            // Redirigir para evitar el reenvío del formulario en el refresh
-            header("Location: ../vista/index.php");
-            exit();
-        } catch (Exception $e) {
-            // Mostrar error si el ID ya existe u otro problema
-            echo '<div class="alert alert-danger">' . htmlspecialchars($e->getMessage()) . '</div>';
+        if ($count > 0) {
+            // Si ya existe un empleado con ese ID, mostrar un error
+            echo '<div class="alert alert-danger">El ID de empleado ya está registrado.</div>';
+        } else {
+            try {
+                // Crear una instancia de la clase Empleado
+                $empleado = new Empleado($conexion);
+
+                // Intentar crear el empleado
+                $empleado->crear($idempleado, $nombre, $apellido, $fechadenac);
+                echo '<div class="alert alert-success">Empleado registrado correctamente.</div>';
+                
+                // Redirigir para evitar el reenvío del formulario en el refresh
+                header("Location: ../vista/index.php");
+                exit();
+            } catch (Exception $e) {
+                // Mostrar error si hay un problema al crear el empleado
+                echo '<div class="alert alert-danger">' . htmlspecialchars($e->getMessage()) . '</div>';
+            }
         }
     } else {
-        echo '<div class="alert alert-warning">Por favor, completa todos los campos.</div>';
+        echo '<div class="alert alert-warning">Por favor, completa todos los campos correctamente.</div>';
     }
 }
 ?>

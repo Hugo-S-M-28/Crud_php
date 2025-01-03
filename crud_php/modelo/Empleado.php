@@ -27,11 +27,16 @@ class Empleado {
 
     // Crea un nuevo empleado si el ID no existe
     public function crear($id, $nombre, $apellido, $fecha) {
+        // Validación básica
+        if (empty($nombre) || empty($apellido) || empty($fecha)) {
+            throw new Exception("Todos los campos son obligatorios.");
+        }
+
         if ($this->idExiste($id)) {
             throw new Exception('El ID de empleado ya está en uso.');
         }
 
-        $sql = "INSERT INTO empleado (idempleado, nombre, apellido, fechadenac) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO empleado (idempleado, nombre, apellido, fecharegistro) VALUES (?, ?, ?, ?)";
         $stmt = $this->conexion->prepare($sql);
 
         if ($stmt === false) {
@@ -45,7 +50,12 @@ class Empleado {
 
     // Actualiza la información de un empleado
     public function actualizar($id, $nombre, $apellido, $fecha) {
-        $sql = "UPDATE empleado SET nombre = ?, apellido = ?, fechadenac = ? WHERE idempleado = ?";
+        // Validación básica
+        if (empty($nombre) || empty($apellido) || empty($fecha)) {
+            throw new Exception("Todos los campos son obligatorios.");
+        }
+
+        $sql = "UPDATE empleado SET nombre = ?, apellido = ?, fecharegistro = ? WHERE idempleado = ?";
         $stmt = $this->conexion->prepare($sql);
 
         if ($stmt === false) {
@@ -59,6 +69,10 @@ class Empleado {
 
     // Elimina un empleado por ID
     public function eliminar($id) {
+        if (!is_numeric($id)) {
+            throw new Exception("El ID del empleado no es válido.");
+        }
+
         $sql = "DELETE FROM empleado WHERE idempleado = ?";
         $stmt = $this->conexion->prepare($sql);
 
@@ -73,7 +87,14 @@ class Empleado {
 
     // Obtiene todos los empleados
     public function obtenerTodos() {
-        return $this->conexion->query("SELECT * FROM empleado");
+        $sql = "SELECT * FROM empleado";
+        $resultado = $this->conexion->query($sql);
+
+        if ($resultado === false) {
+            throw new Exception("Error al ejecutar la consulta: " . $this->conexion->error);
+        }
+
+        return $resultado;
     }
 }
 ?>

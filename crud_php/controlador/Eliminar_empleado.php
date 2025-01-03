@@ -16,16 +16,22 @@ if (isset($_GET['id']) && ctype_digit($_GET['id'])) {
         $stmt->execute();
 
         if ($stmt->affected_rows > 0) {
-            echo '<div class="alert alert-success">Empleado eliminado correctamente.</div>';
+            // Si el empleado fue eliminado con éxito, redirigir a la página de listado de empleados
+            header("Location: index.php?mensaje=El empleado ha sido eliminado correctamente.");
+            exit(); // Asegurar que el código no se ejecute después de la redirección
         } else {
+            // Si no se ha afectado ninguna fila, es posible que el ID no exista
             echo '<div class="alert alert-warning">El empleado no fue encontrado o no se realizaron cambios.</div>';
         }
 
         $stmt->close();
     } else {
+        // Si hay un error al preparar la consulta, mostrar el mensaje de error
         echo '<div class="alert alert-danger">Error al preparar la consulta: ' . $conexion->error . '</div>';
     }
 } else {
+    // Si el ID no es válido o no se proporcionó, mostrar el mensaje de error
     echo '<div class="alert alert-danger">ID no válido o no proporcionado.</div>';
 }
 ?>
+
