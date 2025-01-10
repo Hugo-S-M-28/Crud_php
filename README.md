@@ -114,7 +114,7 @@ Si deseas contribuir al proyecto, puedes realizar un fork del repositorio, imple
 
 ### Contacto:
 
-- **LinkedIn**: [Hugo Sánchez Milán](https://www.linkedin.com/in/hugo-s%C3%A1nchez-mil%C3%A1n-197b81278/)
+- **LinkedIn**: [Hugo Sánchez Milán](https://www.linkedin.com/in/hugo-s-197b81278/)
 - **GitHub**: [Hugo-S-M-28](https://github.com/Hugo-S-M-28)
 
 ---
